@@ -35,10 +35,17 @@ def fetch_prices(attempts=3):
     for attempt in range(1, attempts + 1):
         try:
             with sync_playwright() as p:
-                browser = p.chromium.launch(
-                    headless=True,
-                    args=["--disable-blink-features=AutomationControlled"],
-                )
+                launch_kwargs = {
+                    "headless": True,
+                    "args": ["--disable-blink-features=AutomationControlled",
+                             "--disable-http2"],
+                }
+                # real Chrome (installed on GitHub runners) has a more
+                # authentic fingerprint than bare Chromium; fall back if absent
+                try:
+                    browser = p.chromium.launch(channel="chrome", **launch_kwargs)
+                except Exception:
+                    browser = p.chromium.launch(**launch_kwargs)
                 ctx = browser.new_context(
                     user_agent=(
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
