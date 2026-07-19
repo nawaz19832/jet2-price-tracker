@@ -1,8 +1,9 @@
 name: price-check
 
+# Hourly schedule removed 2026-07-18: Jet2's bot protection blocks GitHub's
+# servers (every run failed), and the live tracker runs on the owner's PC.
+# Manual trigger kept in case this is ever revived behind a residential proxy.
 on:
-  schedule:
-    - cron: "30 * * * *"
   workflow_dispatch:
 
 concurrency:
